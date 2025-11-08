@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Personal Dashboard</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #ffd6e8; /* Light pink */
+  color: #000;
+  padding: 30px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+input, select, textarea, button {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  font-size: 14px;
+}
+
+button {
+  background-color: #ffc8a8;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e04a77;
+}
+
+textarea {
+  width: 250px;
+  height: 80px;
+}
+</style>
+</head>
+<body>
+<h1 id="welcome">Welcome!</h1>
+<input type="text" id="name" placeholder="Enter your name">
+<button onclick="saveName()">Save Name</button>
+<br><br>
+<button onclick="switchTheme()">Switch Theme</button>
+<select id="fontSize" onchange="changeFont()">
+  <option value="small">Small</option>
+  <option value="medium">Medium</option>
+  <option value="large">Large</option>
+</select>
+<br><br>
+<button onclick="resetAll()">Reset</button>
+<p id="visitCount"></p>
+<h3>Feedback</h3>
+<textarea id="feedback" placeholder="Write your feedback..."></textarea>
+
+<script>
+let savedName = localStorage.getItem("username");
+if (savedName) {
+  document.getElementById("welcome").innerText = "Welcome, " + savedName + "!";
+}
+
+function saveName() {
+  let name = document.getElementById("name").value;
+  if (name) {
+    localStorage.setItem("username", name);
+    document.getElementById("welcome").innerText = "Welcome, " + name + "!";
+  }
+}
+
+function switchTheme() {
+  let body = document.body;
+  if (body.style.backgroundColor === "rgb(255, 102, 153)") {
+    body.style.backgroundColor = "#ffd6e8";
+    body.style.color = "black";
+  } else {
+    body.style.backgroundColor = "#ff6699";
+    body.style.color = "white";
+  }
+}
+
+function changeFont() {
+  let size = document.getElementById("fontSize").value;
+  if (size === "small") document.body.style.fontSize = "12px";
+  if (size === "medium") document.body.style.fontSize = "16px";
+  if (size === "large") document.body.style.fontSize = "20px";
+}
+
+let count = Number(sessionStorage.getItem("count")) || 0;
+count++;
+sessionStorage.setItem("count", count);
+document.getElementById("visitCount").innerText =
+  "This tab has been refreshed " + count + " times.";
+
+let fb = document.getElementById("feedback");
+fb.value = sessionStorage.getItem("feedbackText") || "";
+fb.onkeyup = () => sessionStorage.setItem("feedbackText", fb.value);
+
+function resetAll() {
+  localStorage.clear();
+  sessionStorage.clear();
+  location.reload();
+}
+</script>
+
+<!-- 
+THEME SWITCHING:
+Issue: Background color was not saved permanently.
+Justification: The theme changes only for the current session; once reloaded, it resets.
+Suggestion: Use localStorage to save theme preference for persistence.
+
+FONT SIZE:
+Issue: Font size changes are not stored.
+Justification: The user chosen font resets on refresh.
+Suggestion: Save selected font size in localStorage to retain user preference.
+-->
+
+</body>
+</html>
