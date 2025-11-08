@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee Directory Manager</title>
+<style>
+body {
+background-color: #ffe4ec;
+font-family: Arial, sans-serif;
+text-align: center;
+padding: 20px;
+}
+h1 {
+color: #c2185b;
+}
+select, button {
+padding: 6px 10px;
+margin: 5px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+button {
+background-color: #c2185b;
+color: white;
+
+border: none;
+cursor: pointer;
+}
+table {
+margin: 20px auto;
+border-collapse: collapse;
+width: 80%;
+}
+th, td {
+border: 1px solid #555;
+padding: 8px;
+background-color: white;
+}
+.highlight {
+background-color: lightgreen;
+}
+</style>
+</head>
+<body>
+<h1>Employee Directory Manager</h1>
+<h3>Filter by Department:</h3>
+<select id="deptSelect">
+<option value="">Select Department</option>
+</select>
+<button id="showAllBtn">Show All</button>
+<h2>Loaded using Fetch API</h2>
+<div id="fetchTable"></div>
+<h2>Loaded using jQuery $.getJSON()</h2>
+<div id="jqueryTable"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
