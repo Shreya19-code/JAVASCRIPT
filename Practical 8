@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FitZone Gym Admission Form</title>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+form {
+  background-color: white;
+  width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+h2 {
+  text-align: center;
+  color: #333;
+}
+label {
+  font-weight: bold;
+}
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.valid {
+  border-color: green;
+}
+.invalid {
+  border-color: red;
+}
+span {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 10px;
+}
+.error {
+  color: red;
+}
+.success {
+  color: green;
+}
+button {
+  width: 48%;
+  padding: 10px;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+#submitBtn {
+  background-color: green;
+}
+#resetBtn {
+  background-color: red;
+}
+#previewBox {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #eafbea;
+  display: none;
+}
+</style>
+</head>
+<body>
+ <form id="gymForm" name="gymForm" novalidate>
+ <h2> Power Gym Admission Form</h2>
+    <label>Full Name:</label>
+    <input type="text" id="fullName" name="fullName" required>
+   <span id="nameMsg"></span>
+    <label>Email:</label>
+    <input type="email" id="email" name="email" required>
+    <span id="emailMsg"></span>
+    <label>Age:</label>
+    <input type="number" id="age" name="age" required>
+    <span id="ageMsg"></span>
+    <label>Gender:</label><br>
+    <input type="radio" name="gender" value="Male"> Male
+    <input type="radio" name="gender" value="Female"> Female
+    <input type="radio" name="gender" value="Other"> Other
+    <span id="genderMsg"></span>
+    <label>Membership Type:</label>
+    <select id="membership" name="membership" required>
+      <option value="">--Select--</option>
+      <option value="Monthly">Monthly</option>
+      <option value="Quarterly">Quarterly</option>
+      <option value="Yearly">Yearly</option>
+    </select>
+    <span id="memberMsg"></span>
+    <label>Password:</label>
+    <input type="password" id="password" name="password" required>
+    <span id="passMsg"></span>
+    <label>Confirm Password:</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" required>
+    <span id="confirmMsg"></span>
+    <label>Phone:</label>
+    <input type="text" id="phone" name="phone" required>
+    <span id="phoneMsg"></span>
+    <label>Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required>
+    <span id="dobMsg"></span>
+    <label>Profile Photo:</label>
+    <input type="file" id="photo" name="photo" accept=".jpg,.png" required>
+    <span id="fileMsg"></span>
+    <label><input type="checkbox" id="terms" name="terms"> I agree to the terms & conditions</label>
+    <span id="termsMsg"></span>
+    <div style="display:flex; justify-content:space-between; margin-top:10px;">
+      <button type="submit" id="submitBtn" disabled>Submit</button>
+      <button type="reset" id="resetBtn">Reset</button>
+    </div>
+    <div id="previewBox"></div>
+</form>
+<script>
+  const form = document.forms["gymForm"];
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Total Form Elements:", form.length);
+  });
+  function showMsg(id, msg, valid) {
+    const span = document.getElementById(id);
+    span.textContent = msg;
+    span.className = valid ? "success" : "error";
+  }
+  const nameInput = document.getElementById("fullName");
+  nameInput.addEventListener("input", () => {
+    const name = nameInput.value.trim();
+    const regex = /^[A-Za-z ]+$/;
+    if (name.length < 3 || !regex.test(name)) {
+      nameInput.className = "invalid";
+      showMsg("nameMsg", "❌ Name must be at least 3 alphabets.", false);
+    } else {
+      nameInput.className = "valid";
+      showMsg("nameMsg", "✅ GOOD NAME!", true);
+    }
+    checkFormValidity();
+  });
+  const emailInput = document.getElementById("email");
+  emailInput.addEventListener("input", () => {
+    const regex = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+ if (!regex.test(emailInput.value)) {
+      emailInput.className = "invalid";
+      showMsg("emailMsg", "❌ Invalid email format.", false);
+    } else {
+      emailInput.className = "valid";
+      showMsg("emailMsg", "✅ Valid email address.", true);
+    }
+    checkFormValidity();
+  });
+  const ageInput = document.getElementById("age");
+  ageInput.addEventListener("input", () => {
+    const age = parseInt(ageInput.value);
+    if (isNaN(age) || age < 18 || age > 60) {
+      ageInput.className = "invalid";
+      showMsg("ageMsg", "❌ Age must be between 18 and 60.", false);
+    } else {
+      ageInput.className = "valid";
+      showMsg("ageMsg", "✅ Valid age.", true);
+    }
+    checkFormValidity();
+  });
+  const genderInputs = document.getElementsByName("gender");
+  genderInputs.forEach(radio => {
+    radio.addEventListener("change", () => {
+      const selected = Array.from(genderInputs).some(r => r.checked);
+      if (selected) {
+        showMsg("genderMsg", "✅ Gender selected.", true);
+        genderInputs.forEach(r => r.className = "valid");
+      } else {
+        showMsg("genderMsg", "❌ Please select gender.", false);
+        genderInputs.forEach(r => r.className = "invalid");
+      }
+      checkFormValidity();
+    });
+  });
+  const memberSelect = document.getElementById("membership");
+  memberSelect.addEventListener("change", () => {
+    if (memberSelect.value === "") {
+      showMsg("memberMsg", "❌ Please select membership.", false);
+      memberSelect.className = "invalid";
+    } else {
+      showMsg("memberMsg", "✅ Membership selected.", true);
+      memberSelect.className = "valid";
+    }
+    checkFormValidity();
+  });
+  const passInput = document.getElementById("password");
+  const confirmInput = document.getElementById("confirmPassword"); passInput.addEventListener("input", () => {
+    const pass = passInput.value;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&]).{6,}$/;
+    if (!regex.test(pass)) {
+      passInput.className = "invalid";
+      showMsg("passMsg", "❌ Must contain uppercase, lowercase, number & special char.", false);
+    } else {
+      passInput.className = "valid";
+      showMsg("passMsg", "✅ Strong password.", true);
+    }
+    validateConfirm();
+    checkFormValidity();
+  });
+confirmInput.addEventListener("input", validateConfirm);
+  function validateConfirm() {
+    if (confirmInput.value !== passInput.value || confirmInput.value === "") {
+      confirmInput.className = "invalid";
+      showMsg("confirmMsg", "❌ Passwords do not match.", false);
+    } else {
+      confirmInput.className = "valid";
+      showMsg("confirmMsg", "✅ Passwords match.", true);
+    }
+    checkFormValidity();
+  }
+  const phoneInput = document.getElementById("phone");
+  phoneInput.addEventListener("input", () => {
+    const regex = /^\d{10}$/;
+    if (!regex.test(phoneInput.value)) {
+      phoneInput.className = "invalid";
+      showMsg("phoneMsg", "❌ Must be exactly 10 digits.", false);
+    } else {
+      phoneInput.className = "valid";
+      showMsg("phoneMsg", "✅ Valid phone number.", true);
+    }
+    checkFormValidity();
+  });
+  const dobInput = document.getElementById("dob");
+  dobInput.addEventListener("change", () => {
+    const today = new Date();
+    const dob = new Date(dobInput.value);
+    if (dob > today) {
+      dobInput.className = "invalid";
+      showMsg("dobMsg", "❌ Date cannot be in the future.", false);
+    } else {
+      dobInput.className = "valid";
+      showMsg("dobMsg", "✅ Valid date.", true);
+    }
+    checkFormValidity();
+  });
+  const fileInput = document.getElementById("photo");
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) {
+      showMsg("fileMsg", "❌ Please upload a file.", false);
+      fileInput.className = "invalid";
+      return;
+    }
+    const validTypes = ["image/jpeg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      showMsg("fileMsg", "❌ Only JPG/PNG allowed.", false);
+      fileInput.className = "invalid";
+    } else if (file.size > 1024 * 1024) {
+      showMsg("fileMsg", "❌ File size exceeds 1MB.", false);
+      fileInput.className = "invalid";
+    } else {
+      showMsg("fileMsg", "✅ File accepted.", true);
+      fileInput.className = "valid";
+    }
+    checkFormValidity();
+  });
+  const terms = document.getElementById("terms");
+  terms.addEventListener("change", () => {
+    if (!terms.checked) {
+      showMsg("termsMsg", "❌ You must agree to continue.", false);
+    } else {
+      showMsg("termsMsg", "✅ Terms accepted.", true);
+    }
+    checkFormValidity();
+  });
+  function checkFormValidity() {
+    const allInputs = document.querySelectorAll("input.valid, select.valid");
+    const totalValid = allInputs.length;
+    const totalNeeded = 9; 
+    const termsChecked = terms.checked;
+    const submitBtn = document.getElementById("submitBtn");
+    if (totalValid >= totalNeeded && termsChecked) {
+      submitBtn.disabled = false;
+    } else {
+      submitBtn.disabled = true;
+    }
+  }
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const preview = document.getElementById("previewBox");
+    preview.style.display = "block";
+    preview.innerHTML = `
+      ✅ Form submitted successfully! <br>
+      Welcome to Power Gym, <b>${nameInput.value}</b>! <br>
+      Your email: <b>${emailInput.value}</b><br>
+      Membership: <b>${memberSelect.value}</b>
+    `;
+  });
+  form.addEventListener("reset", function() {
+    document.querySelectorAll("span").forEach(s => s.textContent = "");
+    document.querySelectorAll("input, select").forEach(el => el.className = "");
+    document.getElementById("previewBox").style.display = "none";
+    document.getElementById("submitBtn").disabled = true;
+  });
+</script>
+</body>
+</html>
